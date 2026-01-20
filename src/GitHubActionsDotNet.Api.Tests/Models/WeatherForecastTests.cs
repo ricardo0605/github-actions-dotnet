@@ -1,4 +1,5 @@
-namespace GitHubActionsDotNet.Api.Tests;
+namespace GitHubActionsDotNet.Api.Tests.Models;
+
 using FluentAssertions;
 using GitHubActionsDotNet.Api.Models;
 
