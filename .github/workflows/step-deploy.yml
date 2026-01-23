@@ -45,7 +45,7 @@ jobs:
         run: |
           az deployment group create \
             --name ${{ inputs.env }}-deployment-${{ github.run_number }} \
-            --template-file infrastructure/main.bicep \            
+            --template-file infrastructure/main.bicep \
             --parameters environment=${{ inputs.env }} \
             --parameters appName=${{ inputs.app_service_name }} \
             --resource-group ${{ inputs.resource_group_name }} \
@@ -60,4 +60,9 @@ jobs:
 
       - name: Swap slots
         run: |
-          az webapp deployment slot swap -g ${{ inputs.resource_group_name }} -n app-${{ inputs.app_service_name }}-${{ inputs.env }} --slot slot --target-slot production --verbose
+          az webapp deployment slot swap \
+            -g ${{ inputs.resource_group_name }} \
+            -n app-${{ inputs.app_service_name }}-${{ inputs.env }} \
+            --slot slot \
+            --target-slot production \
+            --verbose
