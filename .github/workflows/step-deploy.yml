@@ -47,16 +47,17 @@ jobs:
             --name ${{ inputs.env }}-deployment-${{ github.run_number }} \
             --template-file infrastructure/main.bicep \
             --parameters infrastructure/environments/${{ inputs.env }}.bicepparam \
+            --parameters appName=${{ inputs.app_service_name }} \
             --resource-group ${{ inputs.resource_group_name }} \
             --verbose
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         with: 
-          app-name: ${{ inputs.app_service_name }}
+          app-name: app-${{ inputs.app_service_name }}-${{ inputs.env }}
           slot-name: slot
           package: artifacts/
 
       - name: Swap slots
         run: |
-          az webapp deployment slot swap -g ${{ inputs.resource_group_name }} -n ${{ inputs.app_service_name }} --slot slot --target-slot production --verbose
+          az webapp deployment slot swap -g ${{ inputs.resource_group_name }} -n app-${{ inputs.app_service_name }}-${{ inputs.env }} --slot slot --target-slot production --verbose
