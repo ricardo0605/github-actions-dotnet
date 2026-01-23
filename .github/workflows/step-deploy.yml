@@ -27,6 +27,13 @@ jobs:
     environment: ${{ inputs.env }}
 
     steps:
+      - uses: actions/checkout@v4
+  
+      - uses: actions/download-artifact@v4
+        with:
+          name: dometrain-artifact
+          path: artifacts/
+
       - name: Azure login
         uses: azure/login@v2
         with:
@@ -34,10 +41,13 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - uses: actions/download-artifact@v4
-        with:
-          name: dometrain-artifact
-          path: artifacts/
+      - name: Run Bicep
+        run: |
+          az deployment group create \
+            --name ${{ inputs.env }}-deployment-${{ github.run_number }} \
+            --template-file infrastructure/main.bicep \
+            --resource-group ${{ inputs.resource_group_name }} \
+            --verbose
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
